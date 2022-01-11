@@ -8,6 +8,9 @@ export class UserServiceImpl implements UserService{
     constructor(userDao:UserDao){
         this.userDao = userDao;
     }
+    deleteUserById(userId: string): Promise<boolean> {
+        return this.userDao.deleteUserById(userId)
+    }
 
     getUserById(userId: string): Promise<User> {
         return this.userDao.getUserById(userId);
@@ -21,7 +24,7 @@ export class UserServiceImpl implements UserService{
         return this.userDao.getAllUsers();
     }
 
-    registerUser(user: User): Promise<User> {
+    createUser(user: User): Promise<User> {
         return this.userDao.createUser(user);
     }
 

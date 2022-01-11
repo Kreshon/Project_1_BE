@@ -9,6 +9,8 @@ export interface UserService{
     
     retrieveAllUser(): Promise<User[]>
     
-    registerUser(user:User): Promise<User>
+    createUser(user:User): Promise<User>
+
+    deleteUserById(userId: string): Promise<boolean>
 
 }

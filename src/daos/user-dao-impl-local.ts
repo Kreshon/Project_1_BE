@@ -4,7 +4,7 @@ import { readFile, writeFile } from 'fs/promises'
 import { v4 } from "uuid";
 
 export class UserDaoLocal implements UserDao{
-
+    
     // private user = new CosmosUser(process.env.'//Users//nickkreshon//Desktop//project_1_be//localusers.json')
     // private database = this.user.database('project_0')
     // private container = this.database.container('clients')
@@ -17,7 +17,7 @@ export class UserDaoLocal implements UserDao{
         const users:User[] = JSON.parse(text);
         const user = users.find(user => user.id === userId);
         if(!user){
-            throw new Error(`The User with id ${userId} was not found`); 
+            throw new Error(`The User with id ${userId} was not found`);
         }
         return user;
     }
@@ -25,7 +25,7 @@ export class UserDaoLocal implements UserDao{
     async updateUser(updatedUser: User): Promise<User> {
         const users = await this.getAllUsers();
         users[users.findIndex(element => element.id === updatedUser.id)] = updatedUser
-        writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(users));
+        await writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(users));
         return updatedUser
     }
 
@@ -35,7 +35,8 @@ export class UserDaoLocal implements UserDao{
         const users:User[] = JSON.parse(text);
         user.id = v4();
         users.push(user);
-        writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(users))
+        // await write file????
+        await writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(users))
         return user;
     }
 
@@ -46,10 +47,10 @@ export class UserDaoLocal implements UserDao{
         return users;
     }
 
-    async deleteUserById(id: string): Promise<boolean>{
+    async deleteUserById(userId: string): Promise<boolean>{
         const users = await this.getAllUsers();
-        const filteredUsers = users.filter(user => user.id !== id)
-        writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(filteredUsers))
+        const filteredUsers = users.filter(user => user.id !== userId)
+        await writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(filteredUsers))
         return true
     }
 

@@ -10,4 +10,6 @@ export interface UserDao{
 
     updateUser(user: User): Promise<User>
 
+    deleteUserById(userId: string): Promise<boolean>
+
 }

@@ -11,7 +11,7 @@ describe("User DAO Tests", ()=>{
         const returnedUser: User = await userDao.createUser(testUser);
         expect(returnedUser.id).toBeTruthy();
     })
-
+// Can I remove lines 16-21 now that they are already created?
     it("Should get all users",  async ()=>{
         const user1: User = {fname: "Farell", lname:"Thompson", id:"", username:"", password:"", isManager: true}
         const user2: User = {fname: "Matt", lname:"Krut", id:"", username:"", password:"", isManager: false}
@@ -24,4 +24,16 @@ describe("User DAO Tests", ()=>{
         expect(user.length).toBeGreaterThan(3);
     })
 
-})
+    //update
+    // Again do I specify now a difference between employee and manager?
+    // Or am I going to implement that later on after setting up more of the front end stuff?
+    it("Should update a user", async ()=>{
+
+    });
+
+    //delete
+    it("Should delete a user", async ()=>{
+
+    });
+    
+});

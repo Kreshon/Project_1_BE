@@ -1,16 +1,35 @@
-import { User } from "../src/entities/user";
+import { UserDao } from "../src/daos/user-dao"
+import { User } from "../src/entities/user"
 
+export class UserService{
 
-export interface UserService{
-
-    getUserById(userId: string): Promise<User>
-
-    updateUser(user: User): Promise<User>
+    private userDao:UserDao;
+    constructor(userDao:UserDao){
+        this.userDao = userDao;
+    }
     
-    retrieveAllUser(): Promise<User[]>
-    
-    createUser(user:User): Promise<User>
+    getUserByUsername(username: string): Promise<User> {
+        return this.userDao.getUserByUsername(username);
+    }
 
-    deleteUserById(userId: string): Promise<boolean>
+    getUserById(userId: string): Promise<User> {
+        return this.userDao.getUserById(userId);
+    }
+
+    updateUser(user: User): Promise<User> {
+        return this.userDao.updateUser(user);
+    }
+
+    retrieveAllUser(): Promise<User[]> {
+        return this.userDao.getAllUsers();
+    }
+
+    createUser(user: User): Promise<User> {
+        return this.userDao.createUser(user);
+    }
+
+    deleteUserById(userId: string): Promise<boolean> {
+        return this.userDao.deleteUserById(userId)
+    }
 
 }

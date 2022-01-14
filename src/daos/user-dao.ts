@@ -1,64 +1,71 @@
 import { User } from "../entities/user";
-import { readFile, writeFile } from 'fs/promises'
 import { v4 } from "uuid";
 import { CosmosClient } from "@azure/cosmos";
+import Errors, { ResourceNotFoundError } from "../../error-handler/error-handler";
 
 export class UserDao{
     
    
-    // private user = new CosmosClient(process.env.COSMOS_CONNECTION)
-    // private database = this.user.database('project')
-    // private container = this.database.container('user-credentials')
+    private user = new CosmosClient(process.env.COSMOS_CONNECTION)
+    private database = this.user.database('Project')
+    private container = this.database.container('user-credentials')
 
-    // constructor(private userDao: UserDao){}
 
-    async getUserByUsername(username: string): Promise<User> {
-        const file = await readFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json');
-        const text: string = await file.toString();
-        const users:User[] = JSON.parse(text);
-        const user = users.find(user => user.username === username);
-        return user;
+    async getUserByUsername(psn: string): Promise<User> {
+        const response = await this.container.items.query({
+            query:"SELECT * from c WHERE c.username = @username",
+            parameters:[{name:"@username",value:psn}]
+        }).fetchAll();
+        const {
+            fname,
+            lname,
+            id,
+            username,
+            password,
+            isManager,
+        } = response.resources[0];
+        if(!response){
+            throw new ResourceNotFoundError(`The resource with the username ${username} was not found`)
+        }
+        return {
+            fname,
+            lname,
+            id,
+            username,
+            password,
+            isManager,
+        };
     }
 
     async getUserById(userId: string): Promise<User> {
-        const file = await readFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json');
-        const text: string = await file.toString();
-        const users:User[] = JSON.parse(text);
-        const user = users.find(user => user.id === userId);
-        // if(!user){
-        //     throw new Error(`The User with id ${userId} was not found`);
-        // }
-        return user;
+        const response = await this.container.item(userId, userId).read<User>();
+        if(!response.resource){
+            throw new ResourceNotFoundError(`The resource with id ${userId} was not found`)
+        }
+        return response.resource;
     }
 
     async updateUser(updatedUser: User): Promise<User> {
-        const users = await this.getAllUsers();
-        users[users.findIndex(element => element.id === updatedUser.id)] = updatedUser
-        await writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(users));
-        return updatedUser
+        
+        await this.getUserById(updatedUser.id);
+        const response = await this.container.items.upsert<User>(updatedUser)
+        return updatedUser;
     }
 
     async createUser(user: User): Promise<User> {
-        const file = await readFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json');
-        const text: string = await file.toString();
-        const users:User[] = JSON.parse(text);
         user.id = v4();
-        users.push(user);
-        await writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(users))
-        return user;
+        const response = await this.container.items.create<User>(user)
+        return (response.resource)
     }
 
     async getAllUsers(): Promise<User[]> {
-        const file = await readFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json');
-        const text: string = await file.toString();
-        const users:User[] = JSON.parse(text);
-        return users;
+        const response = await this.container.items.readAll<User>().fetchAll();
+        return response.resources.map(x => ({fname: x.fname, lname: x.lname, id: x.id, username: x.username, password: x.password, isManager: x.isManager}))
     }
 
     async deleteUserById(userId: string): Promise<boolean>{
-        const users = await this.getAllUsers();
-        const filteredUsers = users.filter(user => user.id !== userId)
-        await writeFile('//Users//nickkreshon//Desktop//project_1_be//localusers.json', JSON.stringify(filteredUsers))
+        await this.getAllUsers();
+        const response = await this.container.item(userId,userId).delete();
         return true
     }
 

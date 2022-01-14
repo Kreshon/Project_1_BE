@@ -28,7 +28,9 @@ app.use((req, res, next) => {
   });
 
 app.patch("/login", async (req,res) =>{
-    const loginPayload:{username:string, password:string} = req.body;
+    console.log(req.body)
+    const loginPayload:{username:string, password:string} = req.body.loginPayload;
+    console.log(loginPayload)
     try {const user: User = await userService.getUserByUsername(loginPayload.username);
         if(loginPayload.password === user.password){
             res.status(200)
@@ -43,6 +45,7 @@ app.patch("/login", async (req,res) =>{
 })
 
 app.post("/users", async (req,res)=>{
+    console.log(req.body)
     const user: User = req.body.user;
     const savedUser: User = await userService.createUser(user);
     res.status(201);

@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 
 app.patch("/login", async (req,res) =>{
     console.log(req.body)
-    const loginPayload:{username:string, password:string} = req.body.loginPayload;
+    const loginPayload:{username:string, password:string} = req.body;
     console.log(loginPayload)
     try {const user: User = await userService.getUserByUsername(loginPayload.username);
         if(loginPayload.password === user.password){

@@ -93,7 +93,8 @@ app.get("/reimbursements", async (req,res)=>{
 })
 
 app.put("/reimbursements/:id", async (req,res)=>{
-    const updatedReimbursement: Reimbursement = req.body.reimbursement;
+    console.log(req.body)
+    const updatedReimbursement: Reimbursement = req.body;
     const patchedReimbursement: Reimbursement = await reimbursementService.updateReimbursement(updatedReimbursement);
     res.status(200);
     res.send(patchedReimbursement);

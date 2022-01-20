@@ -80,7 +80,7 @@ app.delete("/users/:id", async (req,res)=>{
 })
 
 app.post("/reimbursements", async (req,res)=>{
-    const reimbursement: Reimbursement = req.body.reimbursement;
+    const reimbursement: Reimbursement = req.body;
     const savedReimbursement: Reimbursement = await reimbursementService.createReimbursement(reimbursement);
     res.status(201);
     res.send(savedReimbursement);

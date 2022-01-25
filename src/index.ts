@@ -33,6 +33,7 @@ app.patch("/login", async (req,res) =>{
     console.log(loginPayload)
     try {const user: User = await userService.getUserByUsername(loginPayload.username);
         if(loginPayload.password === user.password){
+            console.log(user)
             res.status(200)
             res.send(user)
         }else{

@@ -116,4 +116,6 @@ app.delete("/reimbursements/:id", async (req,res)=>{
     res.send(removedReimbursement)
 })
 
-app.listen(4444,()=>console.log("Reimbursement Application Started"));
+app.listen(process.env.PORT ?? 4444, ()=>{
+    console.log("Reimbursement Application Started")
+});

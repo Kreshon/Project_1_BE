@@ -15,7 +15,7 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "start": "PORT=4444 ts-node ./src/index.ts",
+    "start": "ts-node ./src/index.ts",
     "test": "jest --coverage"
   },
   "eslintConfig": {
